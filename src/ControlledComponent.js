@@ -1,10 +1,19 @@
+/* @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import React, { useState } from 'react';
 
+const ulStyles = css`
+  list-style-type: none;
+`;
+const divH1Styles = css`
+  margin-left: 100px;
+  color: grey;
+`;
 export default function ControlledComponent() {
-  const [inputName, setInputName] = useState('Oleksii ');
+  const [inputName, setInputName] = useState('Oleksii');
   const [inputLastName, setLastInputName] = useState('Piltenko');
   const [guests, setGuests] = useState([]);
-
+  const [party, setParty] = useState(guests.party);
   const handleAddGuest = (guestName, guestLastName) => {
     setGuests([
       ...guests,
@@ -12,15 +21,18 @@ export default function ControlledComponent() {
         name: guestName,
         surname: guestLastName,
         id: guests.length,
+        party: false,
       },
     ]);
   };
 
   return (
-    <div>
+    <div css={divH1Styles}>
       <form
         onSubmit={(event) => {
+          console.log(event);
           event.preventDefault();
+          handleAddGuest(inputName, inputLastName);
         }}
       >
         <label>
@@ -37,17 +49,31 @@ export default function ControlledComponent() {
           <input
             onChange={(event) => {
               setLastInputName(event.currentTarget.value);
-              handleAddGuest({ inputName }, { inputLastName });
-              console.log(guests);
             }}
             value={inputLastName}
           />
         </label>
+        <button type="submit">Add guest</button>
+        <button
+          onClick={() => {
+            setInputName('');
+            setLastInputName('');
+          }}
+        >
+          Clean
+        </button>
       </form>
-      <ul>
+      <ul css={ulStyles}>
         {guests.map((guest) => (
           <li key={guest.id}>
-            <span>{guest.name}</span>
+            <span>
+              <input
+                type="checkbox"
+                value={party}
+                onChange={(event) => event.currentTarget.checked}
+              ></input>
+            </span>
+            <span>{guest.name}&nbsp;</span>
             <span>{guest.surname}</span>
           </li>
         ))}
